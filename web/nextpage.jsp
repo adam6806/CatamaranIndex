@@ -10,17 +10,17 @@
 <jsp:useBean id="boatrequest" class="com.github.adam6806.catamaranindex.boat.BoatRequest" scope="session"/>
 <jsp:setProperty name="boatrequest" property="*"/>
 <html>
-<head>
-    <title>Title</title>
-</head>
-<body>
+    <head>
+        <title>Title</title>
+    </head>
+    <body>
 
-<%
-    ArrayList<Boat> boats = boatrequest.getBoats();
-    for (Boat boat : boats) {
-        out.println(boat.getMakeModel());
-    }
-%>
+        <%
+            ArrayList<Boat> boats = boatrequest.getBoats();
+            for (Boat boat : boats) {
+                out.println(boat.getMakeModel());
+            }
+        %>
 
-</body>
+    </body>
 </html>
