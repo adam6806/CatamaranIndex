@@ -8,11 +8,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Page Title</title>
+    <title>Catamaran Index</title>
+    <script type="text/javascript" src="script/jquery-ui/jquery-ui.min.js" ;></script>
+    <link rel="stylesheet" type="text/css" href="script/jquery-ui/jquery-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="script/jquery-ui/jquery-ui.theme.min.css"/>
 </head>
 <body>
-<FORM METHOD=POST ACTION="nextpage.jsp">
-    What's your name? <INPUT TYPE=TEXT NAME=userName SIZE=20><br>
+    <FORM METHOD=POST ACTION="boats.jsp">
+        What's your name?
+        <select id="username" name="username">
+            <option value="adam">Adam</option>
+            <option value="doug">Doug</option>
+        </select>
+        <br>
     <P><INPUT TYPE=SUBMIT>
 </FORM>
 </body>

@@ -1,39 +1,38 @@
 package com.github.adam6806.catamaranindex.boat;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class Boat {
 
-    private String price;
+    private Long price;
     private String makeModel;
     private String location;
     private String image;
     private String link;
+    private int length;
+    private int year;
+    private int id;
+    private int dougRating;
+    private int adamRating;
+    private String timestamp;
 
-    public Boat(String price, String makeModel, String location, String image, String link) {
+    public Boat(Long price, String makeModel, String location, String image, String link, int length, int year, int id, int dougRating, int adamRating, String timestamp) {
         this.price = price;
         this.makeModel = makeModel;
         this.location = location;
         this.image = image;
         this.link = link;
+        this.length = length;
+        this.year = year;
+        this.id = id;
+        this.dougRating = dougRating;
+        this.adamRating = adamRating;
+        this.timestamp = timestamp;
     }
 
-    public Boat(String row) {
-
-        List<String> items = Arrays.asList(row.split("\\|"));
-        this.price = items.get(0);
-        this.makeModel = items.get(1);
-        this.location = items.get(2);
-        this.image = items.get(3);
-        this.link = items.get(4);
-    }
-
-    public String getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
@@ -69,36 +68,59 @@ public class Boat {
         this.makeModel = makeModel;
     }
 
-    public String getHTML() {
-        return "<div>" + getPrice() + " - " + getMakeModel() + " - " + getLocation() + " <br /> <a href=\"" + getLink() + "\"><img src=\"" + getImage() + "\"></a><br /><br />";
+    public int getLength() {
+        return length;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Boat boat = (Boat) o;
-
-        if (getPrice() != null ? !getPrice().equals(boat.getPrice()) : boat.getPrice() != null) return false;
-        if (getMakeModel() != null ? !getMakeModel().equals(boat.getMakeModel()) : boat.getMakeModel() != null)
-            return false;
-        if (getLocation() != null ? !getLocation().equals(boat.getLocation()) : boat.getLocation() != null)
-            return false;
-        return getLink().equals(boat.getLink());
+    public void setLength(int length) {
+        this.length = length;
     }
 
-    @Override
-    public int hashCode() {
-        int result = getPrice() != null ? getPrice().hashCode() : 0;
-        result = 31 * result + (getMakeModel() != null ? getMakeModel().hashCode() : 0);
-        result = 31 * result + (getLocation() != null ? getLocation().hashCode() : 0);
-        result = 31 * result + getLink().hashCode();
-        return result;
+    public int getYear() {
+        return year;
     }
 
-    @Override
-    public String toString() {
-        return price + "|" + makeModel + "|" + location + "|" + image + "|" + link;
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getDougRating() {
+        return dougRating;
+    }
+
+    public void setDougRating(int dougRating) {
+        this.dougRating = dougRating;
+    }
+
+    public int getAdamRating() {
+        return adamRating;
+    }
+
+    public void setAdamRating(int adamRating) {
+        this.adamRating = adamRating;
+    }
+
+    public int getRating(String username) {
+        if ("adam".equals(username)) {
+            return getAdamRating();
+        } else {
+            return getDougRating();
+        }
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }
