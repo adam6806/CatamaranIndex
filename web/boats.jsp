@@ -32,6 +32,7 @@
                     <th>Date Added</th>
                     <th>Price</th>
                     <th>Length</th>
+                    <th>Year</th>
                     <th>Make/Model</th>
                     <th>Location</th>
                     <th>Image</th>
@@ -44,6 +45,7 @@
                     <th>Date Added</th>
                     <th>Price</th>
                     <th>Length</th>
+                    <th>Year</th>
                     <th>Make/Model</th>
                     <th>Location</th>
                     <th>Image</th>
@@ -73,6 +75,7 @@
                     <td><%out.print(boat.getTimestamp());%></td>
                     <td>$<%out.print(boat.getPrice());%></td>
                     <td><%out.print(boat.getLength());%>ft</td>
+                    <td><%out.print(boat.getYear());%></td>
                     <td><%out.print(boat.getMakeModel());%></td>
                     <td><%out.print(boat.getLocation());%></td>
                     <td><a href="<%out.print(boat.getLink());%>" target="_blank"><img
