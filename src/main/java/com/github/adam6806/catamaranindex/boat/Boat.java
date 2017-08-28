@@ -1,11 +1,13 @@
 package com.github.adam6806.catamaranindex.boat;
 
+import java.util.List;
+
 public class Boat {
 
     private Long price;
     private String makeModel;
     private String location;
-    private String image;
+    private List<String> images;
     private String link;
     private int length;
     private int year;
@@ -14,11 +16,11 @@ public class Boat {
     private int adamRating;
     private String timestamp;
 
-    public Boat(Long price, String makeModel, String location, String image, String link, int length, int year, int id, int dougRating, int adamRating, String timestamp) {
+    public Boat(Long price, String makeModel, String location, List<String> images, String link, int length, int year, int id, int dougRating, int adamRating, String timestamp) {
         this.price = price;
         this.makeModel = makeModel;
         this.location = location;
-        this.image = image;
+        this.images = images;
         this.link = link;
         this.length = length;
         this.year = year;
@@ -52,12 +54,12 @@ public class Boat {
         this.link = link;
     }
 
-    public String getImage() {
-        return image;
+    public List<String> getImages() {
+        return images;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImages(List<String> image) {
+        this.images = image;
     }
 
     public String getMakeModel() {

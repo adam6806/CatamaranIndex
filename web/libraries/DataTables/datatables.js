@@ -41528,9 +41528,9 @@
      */
 
     return $.fn.dataTable;
-})
+});
 )
-;
+
 
 
 /*! DataTables jQuery UI integration

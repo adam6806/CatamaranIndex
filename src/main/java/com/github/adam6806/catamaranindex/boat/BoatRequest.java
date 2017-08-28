@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/Boats")
 public class BoatRequest extends HttpServlet {
@@ -87,11 +88,13 @@ public class BoatRequest extends HttpServlet {
                 int adam_rating = resultSet.getInt("adam_rating");
                 String timestamp = resultSet.getDate("timestamp").toString();
                 ResultSet imageResultSet = imageStatement.executeQuery("SELECT url FROM image WHERE boat = " + id);
-                imageResultSet.next();
-                String imageUrl = imageResultSet.getString("url");
+                List<String> images = new ArrayList<>();
+                while (imageResultSet.next()) {
+                    images.add(imageResultSet.getString("url"));
+                }
                 imageResultSet.close();
                 System.out.println(timestamp);
-                Boat boat = new Boat(price, make_model, location, imageUrl, boatUrl, length, year, id, doug_rating, adam_rating, timestamp);
+                Boat boat = new Boat(price, make_model, location, images, boatUrl, length, year, id, doug_rating, adam_rating, timestamp);
                 boats.add(boat);
             }
             resultSet.close();

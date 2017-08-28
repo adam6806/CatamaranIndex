@@ -16,12 +16,16 @@
 <html>
     <head>
         <title>Catamaran Index</title>
-        <script type="text/javascript" src="script/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="script/jquery-ui/jquery-ui.min.js" ;></script>
-        <script type="text/javascript" src="script/DataTables/datatables.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="script/jquery-ui/jquery-ui.min.css"/>
-        <link rel="stylesheet" type="text/css" href="script/jquery-ui/jquery-ui.theme.min.css"/>
-        <link rel="stylesheet" type="text/css" href="script/DataTables/datatables.min.css"/>
+        <script type="text/javascript" src="libraries/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="libraries/jquery-ui/jquery-ui.min.js" ;></script>
+        <script type="text/javascript" src="libraries/DataTables/datatables.min.js"></script>
+        <script type="text/javascript" src="libraries/featherlight/featherlight.js"></script>
+        <script type="text/javascript" src="libraries/featherlight/featherlight.gallery.js"></script>
+        <link rel="stylesheet" type="text/css" href="libraries/jquery-ui/jquery-ui.min.css"/>
+        <link rel="stylesheet" type="text/css" href="libraries/jquery-ui/jquery-ui.theme.min.css"/>
+        <link rel="stylesheet" type="text/css" href="libraries/DataTables/datatables.min.css"/>
+        <link rel="stylesheet" type="text/css" href="libraries/featherlight/featherlight.css"/>
+        <link rel="stylesheet" type="text/css" href="libraries/featherlight/featherlight.gallery.css"/>
     </head>
     <body>
         <table id="boats" class="display" cellspacing="0" width="100%">
@@ -76,10 +80,24 @@
                     <td>$<%out.print(boat.getPrice());%></td>
                     <td><%out.print(boat.getLength());%>ft</td>
                     <td><%out.print(boat.getYear());%></td>
-                    <td><%out.print(boat.getMakeModel());%></td>
+                    <td><a href="<%out.println(boat.getLink());%>" target="_blank"><%
+                        out.print(boat.getMakeModel());%></a></td>
                     <td><%out.print(boat.getLocation());%></td>
-                    <td><a href="<%out.print(boat.getLink());%>" target="_blank"><img
-                            src="<%out.print(boat.getImage());%>"/></a></td>
+                    <td>
+                        <div data-featherlight-gallery data-featherlight-filter="a">
+                            <%
+                                boolean first = true;
+                                for (String imageUrl : boat.getImages()) {
+                                    if (first) {
+                            %><a href="<%out.print(imageUrl);%>"><img src="<%out.print(imageUrl);%>" height="400"/></a><%
+                            first = false;
+                        } else {
+                        %><a href="<%out.print(imageUrl);%>"></a><%
+                                }
+                            }
+                        %>
+                        </div>
+                    </td>
                 </tr>
                 <%
                     }
@@ -110,6 +128,14 @@
                                 table.cell('#combinedRating' + id).data(combinedRating).draw();
                             }
                         });
+                    });
+                    $('[data-featherlight-gallery]').featherlightGallery({
+                        previousIcon: '&#9664;',
+                        nextIcon: '&#9654;',
+                        galleryFadeIn: 0,
+                        galleryFadeOut: 0,
+                        openSpeed: 0,
+                        closeSpeed: 0,
                     });
                 </script>
             </tbody>

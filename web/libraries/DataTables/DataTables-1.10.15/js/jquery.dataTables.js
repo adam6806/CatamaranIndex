@@ -14970,6 +14970,6 @@
      */
 
     return $.fn.dataTable;
-})
+});
 )
-;
+
