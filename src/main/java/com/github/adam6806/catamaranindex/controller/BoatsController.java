@@ -30,7 +30,7 @@ public class BoatsController {
 
     @RequestMapping(value = "Boats", method = RequestMethod.POST)
     @Transactional
-    public String report(ModelMap modelMap, @RequestParam(value = "username") String username) {
+    public String getBoats(ModelMap modelMap, @RequestParam(value = "username") String username) {
         modelMap.addAttribute("boats", boatService.findAll());
         modelMap.addAttribute("username", username);
         return "boats";

@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.github.adam6806.catamaranindex.Boat" %>
 <%@ page import="com.github.adam6806.catamaranindex.database.model.BoatEntity" %>
 <%@ page import="com.github.adam6806.catamaranindex.database.model.ImageEntity" %>
 <%@ page import="java.util.List" %><%--
