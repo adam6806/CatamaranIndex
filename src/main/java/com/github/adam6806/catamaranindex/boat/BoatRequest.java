@@ -1,11 +1,14 @@
 package com.github.adam6806.catamaranindex.boat;
 
 import org.json.JSONObject;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,8 +20,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/Boats")
-public class BoatRequest extends HttpServlet {
+@Controller
+@Scope(value = "session")
+public class BoatRequest {
 
     private static final String URL = "http://www.yachtworld.com/core/listing/cache/searchResults.jsp?toPrice=175000&fromPrice=25000&enid=101&Ntk=boatsEN&type=%28Sail%29+Catamaran&searchtype=advancedsearch&hmid=0&sm=3&enid=0&cit=true&luom=126&currencyid=100&boatsAddedSelected=-1&ftid=0&slim=quick&No=0&rid=100&rid=104&rid=105&rid=107&rid=112&rid=115&rid=125&fracts=1&ps=2000&Ns=PBoat_sortByPriceDesc|1";
     private static final String MAIN_URL = "http://www.yachtworld.com";
@@ -26,8 +30,14 @@ public class BoatRequest extends HttpServlet {
     private ArrayList<Boat> boats;
     private int highPrice;
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @RequestMapping(value = "Boats", method = RequestMethod.POST)
+    public String report(ModelMap modelMap) {
+
+        return "boats";
+    }
+
+    @RequestMapping(value = "Boats/setrating", method = RequestMethod.POST)
+    protected void setRating(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String rating = req.getParameter("rating");
         String username = req.getParameter("username");
         String id = req.getParameter("id");
@@ -98,13 +108,12 @@ public class BoatRequest extends HttpServlet {
                 boats.add(boat);
             }
             resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NamingException e) {
+        } catch (SQLException | NamingException e) {
             e.printStackTrace();
         }
         return boats;
     }
+
 
     public void setBoatRating(String username, int boatId) {
         System.out.println(username);

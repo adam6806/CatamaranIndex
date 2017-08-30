@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.github.adam6806.catamaranindex.boat.Boat" %>
 <%@ page import="java.util.ArrayList" %><%--
   Created by IntelliJ IDEA.
@@ -16,16 +17,17 @@
 <html>
     <head>
         <title>Catamaran Index</title>
-        <script type="text/javascript" src="libraries/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="libraries/jquery-ui/jquery-ui.min.js" ;></script>
-        <script type="text/javascript" src="libraries/DataTables/datatables.min.js"></script>
-        <script type="text/javascript" src="libraries/featherlight/featherlight.js"></script>
-        <script type="text/javascript" src="libraries/featherlight/featherlight.gallery.js"></script>
-        <link rel="stylesheet" type="text/css" href="libraries/jquery-ui/jquery-ui.min.css"/>
-        <link rel="stylesheet" type="text/css" href="libraries/jquery-ui/jquery-ui.theme.min.css"/>
-        <link rel="stylesheet" type="text/css" href="libraries/DataTables/datatables.min.css"/>
-        <link rel="stylesheet" type="text/css" href="libraries/featherlight/featherlight.css"/>
-        <link rel="stylesheet" type="text/css" href="libraries/featherlight/featherlight.gallery.css"/>
+        <script type="text/javascript" src="<c:url value='/resources/jquery-3.2.1.min.js'/>"></script>
+        <script type="text/javascript" src="<c:url value='/resources/jquery-ui/jquery-ui.min.js'/>"></script>
+        <script type="text/javascript" src="<c:url value='/resources/DataTables/datatables.min.js'/>"></script>
+        <script type="text/javascript" src="<c:url value='/resources/featherlight/featherlight.js'/>"></script>
+        <script type="text/javascript" src="<c:url value='/resources/featherlight/featherlight.gallery.js'/>"></script>
+        <link rel="stylesheet" type="text/css" href="<c:url value='/resources/jquery-ui/jquery-ui.min.css'/>"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value='/resources/jquery-ui/jquery-ui.theme.min.css'/>"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value='/resources/DataTables/datatables.min.css'/>"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value='/resources/featherlight/featherlight.css'/>"/>
+        <link rel="stylesheet" type="text/css"
+              href="<c:url value='/resources/featherlight/featherlight.gallery.css'/>"/>
     </head>
     <body>
         <table id="boats" class="display" cellspacing="0" width="100%">
@@ -115,7 +117,7 @@
                         var userRating = $('#' + id).val();
                         $.ajax({
                             type: "POST",
-                            url: "/Boats",
+                            url: "Boats/setrating",
                             data: {
                                 id: id,
                                 username: username,
