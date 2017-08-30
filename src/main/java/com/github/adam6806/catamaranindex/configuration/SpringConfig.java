@@ -1,4 +1,4 @@
-package com.github.adam6806.catamaranindex.boat;
+package com.github.adam6806.catamaranindex.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,7 +14,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @EnableScheduling
-@ComponentScan(basePackages = "com.github.adam6806.catamaranindex.boat")
+@ComponentScan(basePackages = "com.github.adam6806.catamaranindex")
 public class SpringConfig extends WebMvcConfigurerAdapter {
 
     @Bean

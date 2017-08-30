@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.github.adam6806.catamaranindex.boat.Boat" %>
-<%@ page import="java.util.ArrayList" %><%--
+<%@ page import="com.github.adam6806.catamaranindex.Boat" %>
+<%@ page import="com.github.adam6806.catamaranindex.database.model.BoatEntity" %>
+<%@ page import="com.github.adam6806.catamaranindex.database.model.ImageEntity" %>
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: Adam
   Date: 8/20/2017
@@ -8,12 +10,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<jsp:useBean id="boatrequest" class="com.github.adam6806.catamaranindex.boat.BoatRequest" scope="session"/>
-<jsp:setProperty name="boatrequest" property="*"/>
-<%
-    String name = request.getParameter("username");
-    session.setAttribute("username", name);
-%>
 <html>
     <head>
         <title>Catamaran Index</title>
@@ -59,12 +55,19 @@
             </tfoot>
             <tbody>
                 <%
-                    ArrayList<Boat> boats = boatrequest.getBoats();
-                    for (Boat boat : boats) {
+                    List<BoatEntity> boats = (List<BoatEntity>) request.getAttribute("boats");
+                    for (BoatEntity boat : boats) {
                         int dougRating = boat.getDougRating();
                         int adamRating = boat.getAdamRating();
                         int currentRating = dougRating + adamRating;
-                        int userRating = boat.getRating((String) session.getAttribute("username"));
+                        String username = (String) request.getAttribute("username");
+                        int userRating;
+                        if (username.equals("adam")) {
+                            userRating = adamRating;
+                        } else {
+                            userRating = dougRating;
+                        }
+
                 %>
                 <tr>
                     <td>
@@ -82,38 +85,36 @@
                     <td>$<%out.print(boat.getPrice());%></td>
                     <td><%out.print(boat.getLength());%>ft</td>
                     <td><%out.print(boat.getYear());%></td>
-                    <td><a href="<%out.println(boat.getLink());%>" target="_blank"><%
+                    <td><a href="<%out.println(boat.getUrl());%>" target="_blank"><%
                         out.print(boat.getMakeModel());%></a></td>
                     <td><%out.print(boat.getLocation());%></td>
                     <td>
                         <div data-featherlight-gallery data-featherlight-filter="a">
                             <%
                                 boolean first = true;
-                                for (String imageUrl : boat.getImages()) {
+                                for (ImageEntity image : boat.getImages()) {
                                     if (first) {
-                            %><a href="<%out.print(imageUrl);%>"><img src="<%out.print(imageUrl);%>" height="400"/></a><%
+                            %><a href="<%out.print(image.getUrl());%>"><img src="<%out.print(image.getUrl());%>"
+                                                                            height="400"/></a><%
                             first = false;
                         } else {
-                        %><a href="<%out.print(imageUrl);%>"></a><%
+                        %><a href="<%out.print(image.getUrl());%>"></a><%
                                 }
                             }
                         %>
                         </div>
                     </td>
                 </tr>
-                <%
-                    }
-                %>
+                <%}%>
                 <script>
                     $(document).ready(function () {
                         $('#boats').DataTable({
-                            "pageLength": 100,
-
+                            "pageLength": 100
                         });
                     });
                     $('.rating').on('change', function () {
                         var id = this.id;
-                        var username = '<%out.print(session.getAttribute("username"));%>';
+                        var username = '<%out.print(request.getAttribute("username"));%>';
                         var userRating = $('#' + id).val();
                         $.ajax({
                             type: "POST",
@@ -123,7 +124,7 @@
                                 username: username,
                                 rating: userRating
                             },
-                            success: function (data, status) {
+                            success: function (data) {
                                 var combinedRating = data.combinedRating;
                                 var id = data.id;
                                 var table = $('#boats').DataTable();
@@ -137,7 +138,7 @@
                         galleryFadeIn: 0,
                         galleryFadeOut: 0,
                         openSpeed: 0,
-                        closeSpeed: 0,
+                        closeSpeed: 0
                     });
                 </script>
             </tbody>

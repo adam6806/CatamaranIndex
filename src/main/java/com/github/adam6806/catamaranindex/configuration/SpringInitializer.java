@@ -1,5 +1,6 @@
-package com.github.adam6806.catamaranindex.boat;
+package com.github.adam6806.catamaranindex.configuration;
 
+import com.github.adam6806.catamaranindex.database.configuration.HibernateConfiguration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class SpringInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -7,7 +8,7 @@ public class SpringInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{SpringConfig.class};
+        return new Class[]{SpringConfig.class, HibernateConfiguration.class};
     }
 
     @Override

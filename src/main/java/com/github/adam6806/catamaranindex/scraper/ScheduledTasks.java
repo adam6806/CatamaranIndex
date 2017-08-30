@@ -1,4 +1,4 @@
-package com.github.adam6806.catamaranindex.boat;
+package com.github.adam6806.catamaranindex.scraper;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
