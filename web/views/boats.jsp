@@ -88,7 +88,8 @@
                         out.print(boat.getMakeModel());%></a></td>
                     <td><%out.print(boat.getLocation());%></td>
                     <td>
-                        <div data-featherlight-gallery data-featherlight-filter="a">
+                        <div id="gallery<%out.print(boat.getId());%>" data-featherlight-gallery
+                             data-featherlight-filter="a">
                             <%
                                 boolean first = true;
                                 for (ImageEntity image : boat.getImages()) {
@@ -102,6 +103,16 @@
                             }
                         %>
                         </div>
+                        <script>
+                            $('#gallery<%out.print(boat.getId());%>').featherlightGallery({
+                                previousIcon: '&#9664;',
+                                nextIcon: '&#9654;',
+                                galleryFadeIn: 0,
+                                galleryFadeOut: 0,
+                                openSpeed: 0,
+                                closeSpeed: 0
+                            });
+                        </script>
                     </td>
                 </tr>
                 <%}%>
@@ -130,14 +141,6 @@
                                 table.cell('#combinedRating' + id).data(combinedRating).draw();
                             }
                         });
-                    });
-                    $('[data-featherlight-gallery]').featherlightGallery({
-                        previousIcon: '&#9664;',
-                        nextIcon: '&#9654;',
-                        galleryFadeIn: 0,
-                        galleryFadeOut: 0,
-                        openSpeed: 0,
-                        closeSpeed: 0
                     });
                 </script>
             </tbody>
