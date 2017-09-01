@@ -43,7 +43,7 @@ public class BoatsController {
         Integer id = Integer.parseInt(req.getParameter("id"));
         Integer combinedRating = 0;
 
-        BoatEntity boat = boatService.findById(Integer.valueOf(id));
+        BoatEntity boat = boatService.findById(id);
         if ("adam".equals(username)) {
             boat.setAdamRating(rating);
             combinedRating = rating + boat.getDougRating();
@@ -58,6 +58,37 @@ public class BoatsController {
         PrintWriter out = resp.getWriter();
         JSONObject jsonObject = new JSONObject();
         jsonObject.append("combinedRating", combinedRating);
+        jsonObject.append("id", id);
+        out.print(jsonObject.toString());
+        out.flush();
+    }
+
+    @RequestMapping(value = "Boats/remove", method = RequestMethod.POST)
+    protected void remove(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Integer id = Integer.parseInt(req.getParameter("id"));
+
+        BoatEntity boat = boatService.findById(id);
+        boat.setActive(false);
+        boatService.update(boat);
+
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.append("id", id);
+        out.print(jsonObject.toString());
+        out.flush();
+    }
+
+    @RequestMapping(value = "Boats/getDescription", method = RequestMethod.POST)
+    protected void getDescription(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Integer id = Integer.parseInt(req.getParameter("id"));
+
+        BoatEntity boat = boatService.findById(id);
+
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.append("description", boat.getDescription());
         jsonObject.append("id", id);
         out.print(jsonObject.toString());
         out.flush();

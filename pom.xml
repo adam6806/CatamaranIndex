@@ -15,6 +15,7 @@
     <groupId>com.github.adam6806.catamaranindex</groupId>
     <artifactId>${application.name}</artifactId>
     <version>${application.version}</version>
+    <packaging>war</packaging>
 
     <build>
         <plugins>
@@ -27,7 +28,16 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <warSourceDirectory>web</warSourceDirectory>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
         </plugins>
+        <finalName>ROOT</finalName>
     </build>
 
     <dependencyManagement>

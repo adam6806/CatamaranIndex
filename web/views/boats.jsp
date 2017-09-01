@@ -23,6 +23,7 @@
         <link rel="stylesheet" type="text/css" href="<c:url value='/resources/featherlight/featherlight.css'/>"/>
         <link rel="stylesheet" type="text/css"
               href="<c:url value='/resources/featherlight/featherlight.gallery.css'/>"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value='/resources/boats.css'/>"/>
     </head>
     <body>
         <table id="boats" class="display" cellspacing="0" width="100%">
@@ -36,6 +37,7 @@
                     <th>Year</th>
                     <th>Make/Model</th>
                     <th>Location</th>
+                    <th>Description</th>
                     <th>Image</th>
                 </tr>
             </thead>
@@ -49,6 +51,7 @@
                     <th>Year</th>
                     <th>Make/Model</th>
                     <th>Location</th>
+                    <th>Description</th>
                     <th>Image</th>
                 </tr>
             </tfoot>
@@ -56,6 +59,7 @@
                 <%
                     List<BoatEntity> boats = (List<BoatEntity>) request.getAttribute("boats");
                     for (BoatEntity boat : boats) {
+                        if (boat.getActive()) {
                         int dougRating = boat.getDougRating();
                         int adamRating = boat.getAdamRating();
                         int currentRating = dougRating + adamRating;
@@ -65,9 +69,8 @@
                             userRating = adamRating;
                         } else {
                             userRating = dougRating;
-                        }
+                        }%>
 
-                %>
                 <tr>
                     <td>
                         <select id="<%out.print(boat.getId());%>" class="rating" name="rating">
@@ -77,6 +80,7 @@
                             <option<%if (userRating == 3) out.print(" selected");%>>3</option>
                             <option<%if (userRating == 4) out.print(" selected");%>>4</option>
                             <option<%if (userRating == 5) out.print(" selected");%>>5</option>
+                            <option>Remove</option>
                         </select>
                     </td>
                     <td id="combinedRating<%out.print(boat.getId());%>"><%out.print(currentRating);%></td>
@@ -84,9 +88,16 @@
                     <td>$<%out.print(boat.getPrice());%></td>
                     <td><%out.print(boat.getLength());%>ft</td>
                     <td><%out.print(boat.getYear());%></td>
-                    <td><a href="<%out.println(boat.getUrl());%>" target="_blank"><%
-                        out.print(boat.getMakeModel());%></a></td>
+                    <td><%out.print(boat.getMakeModel());%></td>
                     <td><%out.print(boat.getLocation());%></td>
+                    <td>
+                        <button id="descriptionButton<%out.print(boat.getId());%>" value="<%out.print(boat.getId());%>"
+                                class="descriptionButton">Description
+                        </button>
+                        <br>
+                        <br>
+                        <a href="<%out.print(boat.getUrl());%>" target="_blank">Boat Page</a>
+                    </td>
                     <td>
                         <div id="gallery<%out.print(boat.getId());%>" data-featherlight-gallery
                              data-featherlight-filter="a">
@@ -95,7 +106,7 @@
                                 for (ImageEntity image : boat.getImages()) {
                                     if (first) {
                             %><a href="<%out.print(image.getUrl());%>"><img src="<%out.print(image.getUrl());%>"
-                                                                            height="400"/></a><%
+                                                                            class="boatImages"/></a><%
                             first = false;
                         } else {
                         %><a href="<%out.print(image.getUrl());%>"></a><%
@@ -115,30 +126,77 @@
                         </script>
                     </td>
                 </tr>
-                <%}%>
+                <%
+                        }
+                    }
+                %>
                 <script>
                     $(document).ready(function () {
+                        $('#boats').on('draw.dt', function () {
+                            $('.boatImages').css("display", "block");
+                        });
                         $('#boats').DataTable({
-                            "pageLength": 100
+                            "pageLength": 100,
+                            "columnDefs": [
+                                {"width": "400", "targets": 9}
+                            ]
                         });
                     });
                     $('.rating').on('change', function () {
                         var id = this.id;
                         var username = '<%out.print(request.getAttribute("username"));%>';
                         var userRating = $('#' + id).val();
+                        if (userRating == 'Remove') {
+                            $.ajax({
+                                type: "POST",
+                                url: "Boats/remove",
+                                data: {
+                                    id: id
+                                },
+                                success: function (data) {
+                                    var id = data.id;
+                                    var table = $('#boats').DataTable();
+                                    table.row($('#combinedRating' + id).parents('tr')).remove().draw();
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                type: "POST",
+                                url: "Boats/setrating",
+                                data: {
+                                    id: id,
+                                    username: username,
+                                    rating: userRating
+                                },
+                                success: function (data) {
+                                    var combinedRating = data.combinedRating;
+                                    var id = data.id;
+                                    var table = $('#boats').DataTable();
+                                    table.cell('#combinedRating' + id).data(combinedRating).draw();
+                                }
+                            });
+                        }
+                    });
+                    $('.descriptionButton').on('click', function () {
+                        $(".ui-dialog-content").dialog("close");
+                        var id = $(this).val();
                         $.ajax({
                             type: "POST",
-                            url: "Boats/setrating",
+                            url: "Boats/getDescription",
                             data: {
-                                id: id,
-                                username: username,
-                                rating: userRating
+                                id: id
                             },
                             success: function (data) {
-                                var combinedRating = data.combinedRating;
+                                var description = data.description;
                                 var id = data.id;
-                                var table = $('#boats').DataTable();
-                                table.cell('#combinedRating' + id).data(combinedRating).draw();
+                                $('<p>' + description + '</p>').dialog({
+                                    width: 650,
+                                    position: {
+                                        my: "center",
+                                        at: "center",
+                                        of: $('#descriptionButton' + id).parents('tr')
+                                    },
+                                });
                             }
                         });
                     });
