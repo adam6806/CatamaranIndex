@@ -111,7 +111,7 @@ public class YachtWorldBoatSite implements BoatSite {
         String url = driver.getCurrentUrl();
         url = url.substring(0, url.lastIndexOf('#'));
         boat.setUrl(url);
-        boat.setActive(new Byte("1"));
+        boat.setActive(true);
         boat.setTimestamp(new java.sql.Date(new Date().getTime()));
         return boat;
     }

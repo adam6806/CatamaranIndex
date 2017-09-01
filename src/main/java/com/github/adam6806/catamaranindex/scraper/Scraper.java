@@ -29,7 +29,7 @@ public class Scraper {
     @Inject
     private EmailHtmlGenerator emailHtmlGenerator;
 
-    @Scheduled(cron = "0 0/5 * ? * *")
+    @Scheduled(cron = "0 0 7,12,16 ? * *")
     public void scrape() throws IOException {
 
         List<BoatSite> boatSites = boatSiteFactory.getBoatSites();

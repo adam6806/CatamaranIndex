@@ -18,7 +18,7 @@ public class BoatEntity {
     private Integer year;
     private int dougRating;
     private int adamRating;
-    private byte active;
+    private boolean active;
     private Date timestamp;
     private String siteUrl;
     private Set<ImageEntity> images;
@@ -126,11 +126,11 @@ public class BoatEntity {
 
     @Basic
     @Column(name = "active", nullable = false)
-    public byte getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(byte active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
@@ -197,7 +197,6 @@ public class BoatEntity {
         result = 31 * result + (year != null ? year.hashCode() : 0);
         result = 31 * result + dougRating;
         result = 31 * result + adamRating;
-        result = 31 * result + (int) active;
         result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
         result = 31 * result + (siteUrl != null ? siteUrl.hashCode() : 0);
         return result;
