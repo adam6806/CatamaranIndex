@@ -1,22 +1,32 @@
 package com.github.adam6806.catamaranindex.scraper.webdriver;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 
 @Component
+@PropertySource(value = {"classpath:application.properties"})
 public class WebDriverFactory {
 
+    private static Environment environment;
     private static Driver webDriver;
 
+    @Autowired
+    public WebDriverFactory(Environment environment) {
+        WebDriverFactory.environment = environment;
+    }
+
     public static Driver getWebDriver() throws FileNotFoundException {
-        ClassLoader classLoader = WebDriverFactory.class.getClassLoader();
-        URL resource = classLoader.getResource("drivers/geckodriver.exe");
-        if (resource == null) {
-            throw new FileNotFoundException("You are missing the geckodriver.exe file. It should be put in resources/driver/geckodriver.exe");
+        File geckoDriver = new File(environment.getRequiredProperty("geckdriver.path"));
+        if (!geckoDriver.exists()) {
+            throw new FileNotFoundException("You are missing the geckodriver.exe file. " +
+                    "Download from the internet and configure path with application.properties");
         }
-        System.setProperty("webdriver.gecko.driver", resource.getPath());
+        System.setProperty("webdriver.gecko.driver", geckoDriver.getPath());
         webDriver = new Driver();
         return webDriver;
     }
