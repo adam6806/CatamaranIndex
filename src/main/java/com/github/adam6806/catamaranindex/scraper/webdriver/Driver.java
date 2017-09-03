@@ -34,7 +34,7 @@ public class Driver implements WebDriver {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        driver = new FirefoxDriver(firefoxOptions);
+        driver = new FirefoxDriver();
     }
 
     public int getTimeout() {
