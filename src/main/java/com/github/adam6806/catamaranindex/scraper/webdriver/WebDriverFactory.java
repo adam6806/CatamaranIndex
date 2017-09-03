@@ -3,6 +3,7 @@ package com.github.adam6806.catamaranindex.scraper.webdriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -13,9 +14,10 @@ import java.io.FileNotFoundException;
 @PropertySource(value = {"classpath:application.properties"})
 public class WebDriverFactory {
 
-    private static Environment environment;
-
     @Inject
+    private static ResourceLoader resourceLoader;
+
+    private static Environment environment;
     private static Driver webDriver;
 
     @Autowired
@@ -30,6 +32,7 @@ public class WebDriverFactory {
                     "Download from the internet and configure path with application.properties");
         }
         System.setProperty("webdriver.gecko.driver", geckoDriver.getPath());
+        webDriver = new Driver(resourceLoader);
         return webDriver;
     }
 }

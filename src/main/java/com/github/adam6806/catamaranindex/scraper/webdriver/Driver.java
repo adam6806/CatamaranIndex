@@ -9,27 +9,21 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.support.ui.*;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-@Component
 public class Driver implements WebDriver {
-
-    @Inject
-    private ResourceLoader resourceLoader;
 
     private final int DEFAULT_TIME_OUT = 30;
     Log logger = new SimpleLog(Driver.class.getName());
     private WebDriver driver;
     private int timeout = DEFAULT_TIME_OUT;
 
-    public Driver() {
+    public Driver(ResourceLoader resourceLoader) {
 
         FirefoxProfile firefoxProfile = new FirefoxProfile();
         FirefoxOptions firefoxOptions = new FirefoxOptions();
