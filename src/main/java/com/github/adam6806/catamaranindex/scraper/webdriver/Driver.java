@@ -7,15 +7,20 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.support.ui.*;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.net.URL;
+import javax.inject.Inject;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class Driver implements WebDriver {
+
+    @Inject
+    private ResourceLoader resourceLoader;
 
     private final int DEFAULT_TIME_OUT = 30;
     Log logger = new SimpleLog(Driver.class.getName());
@@ -25,12 +30,14 @@ public class Driver implements WebDriver {
     public Driver() {
 
         FirefoxProfile firefoxProfile = new FirefoxProfile();
-        ClassLoader classLoader = Driver.class.getClassLoader();
-        URL resource = classLoader.getResource("adblock");
-        File adblock = new File(resource.getPath());
-        firefoxProfile.addExtension(adblock);
         FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setProfile(firefoxProfile);
+        Resource resource = resourceLoader.getResource("file:adblock.xpi");
+        try {
+            firefoxProfile.addExtension(resource.getFile());
+            firefoxOptions.setProfile(firefoxProfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         driver = new FirefoxDriver(firefoxOptions);
     }
 
