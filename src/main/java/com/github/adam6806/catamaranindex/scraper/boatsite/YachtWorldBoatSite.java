@@ -28,12 +28,14 @@ public class YachtWorldBoatSite implements BoatSite {
     private Log logger = new SimpleLog(YachtWorldBoatSite.class.getName());
     private List<BoatEntity> entities;
     private Driver driver;
+    private int urlTimeout;
 
     private void setUp() throws FileNotFoundException {
         driver = WebDriverFactory.getWebDriver();
+        urlTimeout = 30;
     }
 
-    private void run() {
+    public void run() {
         try {
             setUp();
             navigateToUrl(URL);
@@ -45,7 +47,7 @@ public class YachtWorldBoatSite implements BoatSite {
             logger.error("Webfactory threw an exception: " + e.getMessage() + "Skipping boatsite.");
         } catch (BoatSiteDownException e) {
             //TODO: Send email with error information
-            logger.error("WebsiteDownExecption: " + e.getMessage());
+            logger.error("BoatSiteDownException: " + e.getMessage());
         }
 
         quit();
@@ -184,34 +186,43 @@ public class YachtWorldBoatSite implements BoatSite {
         logger.info("Setting Images");
         Set<ImageEntity> imageEntities = new HashSet<>();
 
-        By galleryCarousel = By.cssSelector("div[class^='galleria-thumbnails-container']");
+        By galleryCarousel = By.className("galleria-thumbnails-list");
+        By galleryLoader = By.className("galleria-loader");
+        By galleryImgs = By.cssSelector("div[class^='galleria-image'][class$='lazy']");
         String imageSrcPattern = "<img.*?src=\"(.*?)\"";
+        int divListSize = 0;
 
-        if (driver.isElementPresent(galleryCarousel)) {
+        if(driver.waitForElementNotVisible(galleryLoader, urlTimeout)) {
+            driver.waitForAllElementsVisible(galleryImgs, urlTimeout);
+            if (driver.isElementPresent(galleryCarousel)) {
 
-            String caroselImageSrc = ScraperUtils.cleanHTML(driver.getElementHtml(galleryCarousel));
-            List<String> divList = getDivList(caroselImageSrc);
+                String caroselImageSrc = ScraperUtils.cleanHTML(driver.getElementHtml(galleryCarousel));
+                List<String> divList = getDivList(caroselImageSrc);
+                divListSize = divList.size() - 1;
+                logger.info("Div list size: " + divListSize);
 
-            for (String div : divList) {
-                if (StringUtils.isNotEmpty(div)
-                        && div.contains("img")) {
-                    String imageSrc = ScraperUtils.getTextByPattern(imageSrcPattern, div);
+                for (String div : divList) {
+                    if (StringUtils.isNotEmpty(div)
+                            && div.contains("img")) {
+                        String imageSrc = ScraperUtils.getTextByPattern(imageSrcPattern, div);
 
-                    if (imageSrc.startsWith("http")) {
-                        ImageEntity imageEntity = new ImageEntity();
-                        imageEntity.setBoat(boat);
-                        imageEntity.setUrl(imageSrc);
-                        imageEntities.add(imageEntity);
+                        if (imageSrc.startsWith("http")) {
+                            ImageEntity imageEntity = new ImageEntity();
+                            imageEntity.setBoat(boat);
+                            imageEntity.setUrl(imageSrc);
+                            imageEntities.add(imageEntity);
+                        }
                     }
                 }
-            }
 
-        } else {
-            throw new BoatSiteDownException("Unable to locate gallery images.");
+            } else {
+                throw new BoatSiteDownException("Unable to locate gallery images.");
+            }
         }
 
-        boat.setImages(imageEntities);
 
+        boat.setImages(imageEntities);
+        logger.info("Image entities is equal to divlist? " + (imageEntities.size() == divListSize));
         return boat;
     }
 
