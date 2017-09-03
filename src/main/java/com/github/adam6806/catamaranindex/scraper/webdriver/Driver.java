@@ -6,9 +6,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -16,6 +14,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class Driver implements WebDriver {
 
@@ -114,17 +113,33 @@ public class Driver implements WebDriver {
             WebDriverWait wait = new WebDriverWait(driver, timeOut);
             WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (TimeoutException e) {
-            throw new IllegalStateException(e.getMessage());
+            logger.error("Timed out waiting for element: " + by);
         }
 
     }
 
-    public void waitForElementPresent(By by, int timeOut) {
+    public boolean waitForElementNotVisible(By by, int timeOut) {
+        Boolean isVisbile = false;
         try {
             WebDriverWait wait = new WebDriverWait(driver, timeOut);
-            WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(by));
+            isVisbile = wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+
         } catch (TimeoutException e) {
-            throw new IllegalStateException(e.getMessage());
+            logger.error("Timed out waiting for element: " + by);
+        }
+        return isVisbile;
+    }
+
+    public void waitForAllElementsVisible(By by, int timeout) {
+        try {
+            Wait<WebDriver> wait = new FluentWait<>(driver)
+                    .withTimeout(timeout, TimeUnit.SECONDS)
+                    .pollingEvery(5, TimeUnit.SECONDS)
+                    .ignoring(NoSuchElementException.class);
+
+            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+        } catch(TimeoutException e) {
+            logger.error("Timed out waiting for element: " + by);
         }
     }
 
