@@ -31,7 +31,7 @@ public class Driver implements WebDriver {
 
         FirefoxProfile firefoxProfile = new FirefoxProfile();
         FirefoxOptions firefoxOptions = new FirefoxOptions();
-        Resource resource = resourceLoader.getResource("file:adblock.xpi");
+        Resource resource = resourceLoader.getResource("classpath:adblock.xpi");
         try {
             firefoxProfile.addExtension(resource.getFile());
             firefoxOptions.setProfile(firefoxProfile);
