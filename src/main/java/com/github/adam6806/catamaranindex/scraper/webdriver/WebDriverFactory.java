@@ -6,7 +6,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -14,15 +13,15 @@ import java.io.FileNotFoundException;
 @PropertySource(value = {"classpath:application.properties"})
 public class WebDriverFactory {
 
-    @Inject
     private static ResourceLoader resourceLoader;
 
     private static Environment environment;
     private static Driver webDriver;
 
     @Autowired
-    public WebDriverFactory(Environment environment) {
+    public WebDriverFactory(Environment environment, ResourceLoader resourceLoader) {
         WebDriverFactory.environment = environment;
+        WebDriverFactory.resourceLoader = resourceLoader;
     }
 
     public static Driver getWebDriver() throws FileNotFoundException {
