@@ -21,7 +21,7 @@ public class WebDriverFactory {
     }
 
     public static Driver getWebDriver() throws FileNotFoundException {
-        File geckoDriver = new File(environment.getRequiredProperty("geckdriver.path"));
+        File geckoDriver = new File(environment.getRequiredProperty("geckodriver.path"));
         if (!geckoDriver.exists()) {
             throw new FileNotFoundException("You are missing the geckodriver.exe file. " +
                     "Download from the internet and configure path with application.properties");
