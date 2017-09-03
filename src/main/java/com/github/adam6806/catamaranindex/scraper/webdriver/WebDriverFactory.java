@@ -5,6 +5,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -13,6 +14,8 @@ import java.io.FileNotFoundException;
 public class WebDriverFactory {
 
     private static Environment environment;
+
+    @Inject
     private static Driver webDriver;
 
     @Autowired
@@ -27,7 +30,6 @@ public class WebDriverFactory {
                     "Download from the internet and configure path with application.properties");
         }
         System.setProperty("webdriver.gecko.driver", geckoDriver.getPath());
-        webDriver = new Driver();
         return webDriver;
     }
 }
