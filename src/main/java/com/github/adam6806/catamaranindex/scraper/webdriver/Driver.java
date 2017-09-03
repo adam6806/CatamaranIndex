@@ -14,7 +14,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 public class Driver implements WebDriver {
 
@@ -27,7 +26,7 @@ public class Driver implements WebDriver {
 
         FirefoxProfile firefoxProfile = new FirefoxProfile();
         ClassLoader classLoader = Driver.class.getClassLoader();
-        URL resource = classLoader.getResource("adblock.xpi");
+        URL resource = classLoader.getResource("adblock");
         File adblock = new File(resource.getPath());
         firefoxProfile.addExtension(adblock);
         FirefoxOptions firefoxOptions = new FirefoxOptions();
