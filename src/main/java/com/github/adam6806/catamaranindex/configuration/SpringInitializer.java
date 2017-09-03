@@ -8,7 +8,7 @@ public class SpringInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{SpringConfig.class, HibernateConfiguration.class};
+        return new Class[]{SpringConfig.class, HibernateConfiguration.class, SpringSecurityConfig.class};
     }
 
     @Override
