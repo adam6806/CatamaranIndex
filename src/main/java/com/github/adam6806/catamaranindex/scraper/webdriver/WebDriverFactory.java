@@ -6,7 +6,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 
 @Component
@@ -25,12 +24,6 @@ public class WebDriverFactory {
     }
 
     public static Driver getWebDriver() throws FileNotFoundException {
-        File geckoDriver = new File(environment.getRequiredProperty("geckodriver.path"));
-        if (!geckoDriver.exists()) {
-            throw new FileNotFoundException("You are missing the geckodriver.exe file. " +
-                    "Download from the internet and configure path with application.properties");
-        }
-        System.setProperty("webdriver.gecko.driver", geckoDriver.getPath());
         webDriver = new Driver(resourceLoader);
         return webDriver;
     }

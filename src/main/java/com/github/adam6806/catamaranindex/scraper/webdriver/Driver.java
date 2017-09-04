@@ -3,11 +3,14 @@ package com.github.adam6806.catamaranindex.scraper.webdriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.impl.SimpleLog;
 import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.Nullable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +24,12 @@ public class Driver implements WebDriver {
 
     public Driver(ResourceLoader resourceLoader) {
 
-        driver = new FirefoxDriver();
+        DesiredCapabilities capability = DesiredCapabilities.firefox();
+        try {
+            driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capability);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getTimeout() {
