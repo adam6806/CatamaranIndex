@@ -155,6 +155,7 @@ public class BoatEntity {
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "boat", fetch = FetchType.EAGER)
+    @OrderBy(value = "id")
     public Set<ImageEntity> getImages() {
         return images;
     }

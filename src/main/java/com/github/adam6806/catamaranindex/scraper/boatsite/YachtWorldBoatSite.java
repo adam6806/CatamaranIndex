@@ -32,7 +32,7 @@ public class YachtWorldBoatSite implements BoatSite {
 
     private void setUp() throws FileNotFoundException {
         driver = WebDriverFactory.getWebDriver();
-        urlTimeout = 30;
+        urlTimeout = 5;
     }
 
     public void run() {
@@ -184,7 +184,7 @@ public class YachtWorldBoatSite implements BoatSite {
 
     private BoatEntity setImages(BoatEntity boat) throws BoatSiteDownException {
         logger.info("Setting Images");
-        Set<ImageEntity> imageEntities = new HashSet<>();
+        Set<ImageEntity> imageEntities = new LinkedHashSet<>();
 
         By galleryCarousel = By.className("galleria-thumbnails-list");
         By galleryLoader = By.className("galleria-loader");
@@ -282,7 +282,11 @@ public class YachtWorldBoatSite implements BoatSite {
 
     private void quit() {
         logger.info("Ending Selenium Session");
-        driver.quit();
+        try {
+            driver.quit();
+        } catch (Exception e) {
+
+        }
     }
 
     private List<String> getDivList(String src) {

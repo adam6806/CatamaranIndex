@@ -1,6 +1,8 @@
 package com.github.adam6806.catamaranindex.controller;
 
 import com.github.adam6806.catamaranindex.database.model.BoatEntity;
+import com.github.adam6806.catamaranindex.scraper.Scraper;
+import com.github.adam6806.catamaranindex.scraper.boatsite.BoatSiteFactory;
 import com.github.adam6806.catamaranindex.scraper.boatsite.YachtWorldBoatSite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -18,9 +20,12 @@ import java.util.List;
 @Scope(value = "session")
 public class ScraperTestController {
 
-    private final String YAHCT_WORLD = "yachtWorld";
     @Autowired
     private YachtWorldBoatSite yachtWorldBoatSite;
+
+    @Autowired
+    private Scraper scraper;
+
     @RequestMapping(value = "test-scraper", method = RequestMethod.GET)
     public String testScraper(ModelMap model) {
         return "testScraper";
@@ -30,9 +35,9 @@ public class ScraperTestController {
     public String scraper(ModelMap modelMap, @RequestParam(value = "scraper") String scraper) throws IOException {
         List<BoatEntity> entityList = new ArrayList<>();
         switch (scraper){
-            case YAHCT_WORLD:
-                    entityList = yachtWorldBoatSite.getBoatEntities();
-                    break;
+            case BoatSiteFactory.YACHT_WORLD:
+                entityList = yachtWorldBoatSite.getBoatEntities();
+                break;
             default:
                 break;
         }
@@ -40,4 +45,15 @@ public class ScraperTestController {
         modelMap.addAttribute("scraper", scraper);
         return "testScraperResults";
     }
+
+    @RequestMapping(value = "runScraper", method = RequestMethod.GET)
+    public String chooseSite(ModelMap model) {
+        try {
+            scraper.scrape();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "index";
+    }
+
 }

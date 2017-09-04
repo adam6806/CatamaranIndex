@@ -3,12 +3,14 @@ package com.github.adam6806.catamaranindex.scraper.webdriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.impl.SimpleLog;
 import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -17,14 +19,18 @@ import java.util.concurrent.TimeUnit;
 
 public class Driver implements WebDriver {
 
-    private final int DEFAULT_TIME_OUT = 30;
+    private final int DEFAULT_TIME_OUT = 10;
     Log logger = new SimpleLog(Driver.class.getName());
     private WebDriver driver;
     private int timeout = DEFAULT_TIME_OUT;
 
     public Driver(Environment environment) {
 
-        DesiredCapabilities capability = DesiredCapabilities.firefox();
+        DesiredCapabilities capability = DesiredCapabilities.chrome();
+        ChromeOptions options = new ChromeOptions();
+        options.addExtensions(new File("C:\\chromedriver\\3.15.0_0.crx"));
+        capability.setCapability(ChromeOptions.CAPABILITY, options);
+
         try {
             driver = new RemoteWebDriver(new URL(environment.getRequiredProperty("seleniumserver.url")), capability);
         } catch (MalformedURLException e) {
