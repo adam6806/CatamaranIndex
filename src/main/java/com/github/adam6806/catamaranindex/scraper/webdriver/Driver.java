@@ -6,7 +6,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.env.Environment;
 
 import javax.annotation.Nullable;
 import java.net.MalformedURLException;
@@ -22,11 +22,11 @@ public class Driver implements WebDriver {
     private WebDriver driver;
     private int timeout = DEFAULT_TIME_OUT;
 
-    public Driver(ResourceLoader resourceLoader) {
+    public Driver(Environment environment) {
 
         DesiredCapabilities capability = DesiredCapabilities.firefox();
         try {
-            driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capability);
+            driver = new RemoteWebDriver(new URL(environment.getRequiredProperty("seleniumserver.url")), capability);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
