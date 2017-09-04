@@ -8,10 +8,11 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.*;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -20,20 +21,22 @@ import java.util.concurrent.TimeUnit;
 public class Driver implements WebDriver {
 
     private final int DEFAULT_TIME_OUT = 10;
-    Log logger = new SimpleLog(Driver.class.getName());
-    private WebDriver driver;
     private int timeout = DEFAULT_TIME_OUT;
+    private Log logger = new SimpleLog(Driver.class.getName());
+    private WebDriver driver;
 
-    public Driver(Environment environment) {
+
+    public Driver(Environment environment, ResourceLoader resourceLoader) {
 
         DesiredCapabilities capability = DesiredCapabilities.chrome();
-        ChromeOptions options = new ChromeOptions();
-        options.addExtensions(new File("C:\\chromedriver\\3.15.0_0.crx"));
-        capability.setCapability(ChromeOptions.CAPABILITY, options);
 
         try {
+            ChromeOptions options = new ChromeOptions();
+            Resource resource = resourceLoader.getResource("classpath:3.15.0_0.crx");
+            options.addExtensions(resource.getFile());
+            capability.setCapability(ChromeOptions.CAPABILITY, options);
             driver = new RemoteWebDriver(new URL(environment.getRequiredProperty("seleniumserver.url")), capability);
-        } catch (MalformedURLException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -180,7 +183,6 @@ public class Driver implements WebDriver {
         wait.until(pageLoadCondition);
         this.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
-
 
     public void click(By by) {
         driver.findElement(by).click();

@@ -1,3 +1,4 @@
+<%@ page import="com.github.adam6806.catamaranindex.scraper.boatsite.BoatSiteFactory" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
@@ -18,7 +19,7 @@
     <FORM METHOD=POST ACTION="testScraperResults">
         Test What Scraper?
         <select id="scraper" name="scraper">
-            <option value="yachtWorld">Yacht World</option>
+            <option value="<%out.print(BoatSiteFactory.YACHT_WORLD);%>">Yacht World</option>
         </select>
         <br>
         <P><INPUT TYPE=SUBMIT> </P>

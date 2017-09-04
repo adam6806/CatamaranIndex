@@ -2,6 +2,7 @@ package com.github.adam6806.catamaranindex.scraper.boatsite;
 
 import com.github.adam6806.catamaranindex.database.model.BoatEntity;
 import com.github.adam6806.catamaranindex.database.model.ImageEntity;
+import com.github.adam6806.catamaranindex.database.service.BoatService;
 import com.github.adam6806.catamaranindex.scraper.webdriver.BoatSiteDownException;
 import com.github.adam6806.catamaranindex.scraper.webdriver.Driver;
 import com.github.adam6806.catamaranindex.scraper.webdriver.ScraperUtils;
@@ -21,42 +22,42 @@ import java.util.*;
 @Component
 public class YachtWorldBoatSite implements BoatSite {
 
+    @Inject
+    private BoatService boatService;
+
     private static final String URL = "http://www.yachtworld.com/core/listing/cache/searchResults.jsp?toPrice=175000&fromPrice=25000&enid=101&Ntk=boatsEN&type=%28Sail%29+Catamaran&searchtype=advancedsearch&hmid=0&sm=3&enid=0&cit=true&luom=126&currencyid=100&boatsAddedSelected=-1&ftid=0&slim=quick&No=0&rid=100&rid=104&rid=105&rid=107&rid=112&rid=115&rid=125&fracts=1&ps=2000&Ns=PBoat_sortByPriceDesc|1";
     private static final String MAIN_URL = "http://www.yachtworld.com";
-    @Inject
-    private WebDriverFactory webDriverFactory;
     private Log logger = new SimpleLog(YachtWorldBoatSite.class.getName());
-    private List<BoatEntity> entities;
     private Driver driver;
-    private int urlTimeout;
+    private int urlTimeout = 5;
 
-    private void setUp() throws FileNotFoundException {
-        driver = WebDriverFactory.getWebDriver();
-        urlTimeout = 5;
+    @Override
+    public List<BoatEntity> getBoatEntities() {
+        return run();
     }
 
-    public void run() {
+    public List<BoatEntity> run() {
         try {
             setUp();
             navigateToUrl(URL);
-
             List<String> urls = getListingURLs();
-            entities = navigateIntoURLAndScrapeListing(urls);
+            List<BoatEntity> entities = navigateIntoURLAndScrapeListing(urls);
+            return entities;
         } catch (IOException e) {
             //TODO: Send email with error information
             logger.error("Webfactory threw an exception: " + e.getMessage() + "Skipping boatsite.");
         } catch (BoatSiteDownException e) {
             //TODO: Send email with error information
             logger.error("BoatSiteDownException: " + e.getMessage());
+        } finally {
+            quit();
         }
-
-        quit();
+        return Collections.EMPTY_LIST;
     }
 
-    @Override
-    public List<BoatEntity> getBoatEntities() {
-        run();
-        return entities;
+    private void setUp() throws FileNotFoundException {
+        driver = WebDriverFactory.getWebDriver();
+        urlTimeout = 5;
     }
 
     private List<String> getListingURLs() throws BoatSiteDownException {
@@ -86,8 +87,11 @@ public class YachtWorldBoatSite implements BoatSite {
         List<BoatEntity> boats = new ArrayList<>();
 
         for (String url : urls) {
-            navigateToUrl(url);
-            boats.add(scrapeListing());
+            BoatEntity boatEntity = boatService.findByUrl(url);
+            if (boatEntity == null) {
+                navigateToUrl(url);
+                boats.add(scrapeListing());
+            }
         }
 
         return boats;
@@ -192,7 +196,7 @@ public class YachtWorldBoatSite implements BoatSite {
         String imageSrcPattern = "<img.*?src=\"(.*?)\"";
         int divListSize = 0;
 
-        if(driver.waitForElementNotVisible(galleryLoader, urlTimeout)) {
+        if (driver.waitForElementNotVisible(galleryLoader, urlTimeout)) {
             driver.waitForAllElementsVisible(galleryImgs, urlTimeout);
             if (driver.isElementPresent(galleryCarousel)) {
 
@@ -219,7 +223,6 @@ public class YachtWorldBoatSite implements BoatSite {
                 throw new BoatSiteDownException("Unable to locate gallery images.");
             }
         }
-
 
         boat.setImages(imageEntities);
         logger.info("Image entities is equal to divlist? " + (imageEntities.size() == divListSize));
@@ -285,7 +288,7 @@ public class YachtWorldBoatSite implements BoatSite {
         try {
             driver.quit();
         } catch (Exception e) {
-
+            logger.error("Error occurred during driver.quit()");
         }
     }
 
@@ -293,5 +296,4 @@ public class YachtWorldBoatSite implements BoatSite {
         String divPattern = "<div[^>]*>(.*?)</div>";
         return ScraperUtils.getTextArrayByPattern(divPattern, src);
     }
-
 }

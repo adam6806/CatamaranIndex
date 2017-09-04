@@ -26,9 +26,6 @@ public class Scraper {
     @Inject
     private EmailSender emailSender;
 
-    @Inject
-    private EmailHtmlGenerator emailHtmlGenerator;
-
     @Scheduled(cron = "0 0 7,12,16 ? * *")
     public void scrape() throws IOException {
 
@@ -38,7 +35,7 @@ public class Scraper {
             saveBoatEntities(boatSite, newBoats);
         }
         if (!newBoats.isEmpty()) {
-            emailSender.sendEmail(EmailHtmlGenerator.generateHTML(newBoats), "asmith0935@gmail.com");
+            emailSender.sendEmail(EmailHtmlGenerator.generateHTML(newBoats));
         }
     }
 
